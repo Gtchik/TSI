@@ -76,7 +76,7 @@ static void init()
   shader_program_id = glhelper::create_program_from_file(
       "programme_1/src/shader.vert", 
       "programme_1/src/shader.frag"); CHECK_GL_ERROR();
-  glUseProgram(shader_program_id);
+  glUseProgram(shader_program_id); CHECK_GL_ERROR();
 
   //activation de la gestion de la profondeur
   glEnable(GL_DEPTH_TEST); CHECK_GL_ERROR();
