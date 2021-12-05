@@ -34,12 +34,44 @@
 
 //identifiant du shader
 GLuint shader_program_id;
+static int somme = 0;
+
 
 /*****************************************************************************\
  * init                                                                      *
  \*****************************************************************************/
 static void init()
 {
+  float sommets[] = {0.0, 0.0, 0.0,
+                     0.8, 0.0, 0.0,
+                     0.0, 0.8, 0.0};
+
+  GLuint vao;
+  GLuint vbo;
+  //attribution d'une liste d'état (1 indique la création d'une seule liste)
+  glGenVertexArrays(1, &vao);
+  //affectation de la liste d'état courante
+  glBindVertexArray(vao);
+  //attribution d’un buffer de donnees (1 indique la création d’un seul buffer)
+  glGenBuffers(1,&vbo); CHECK_GL_ERROR();
+  //affectation du buffer courant
+  glBindBuffer(GL_ARRAY_BUFFER,vbo); CHECK_GL_ERROR();
+  //copie des donnees des sommets sur la carte graphique
+  glBufferData(GL_ARRAY_BUFFER,sizeof(sommets),sommets,GL_STATIC_DRAW);
+  CHECK_GL_ERROR();
+
+  // Les deux commandes suivantes sont stockées dans l'état du vao courant
+  // Active l'utilisation des données de positions
+  // (le 0 correspond à la location dans le vertex shader)
+  glEnableVertexAttribArray(0); CHECK_GL_ERROR();
+  // Indique comment le buffer courant (dernier vbo "bindé")
+  // est utilisé pour les positions des sommets
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); CHECK_GL_ERROR();
+
+  // Active l'utilisation des données de positions (le 0 correspond à la location dans le vertex shader)
+  glEnableVertexAttribArray(0); CHECK_GL_ERROR();
+  // Indique comment le buffer courant (dernier vbo "bindé") est utilisé pour les positions des sommets
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); CHECK_GL_ERROR();
   // Chargement du shader
   shader_program_id = glhelper::create_program_from_file(
       "programme_1/src/shader.vert", 
@@ -54,9 +86,14 @@ static void init()
 static void display_callback()
 {
   //effacement des couleurs du fond d'ecran
-  glClearColor(0.5f, 0.6f, 0.9f, 1.0f); CHECK_GL_ERROR();
+  //glClearColor((float) (somme%1000)/1000, (float) 1 - (somme%1200)/1200, (float) (somme%1400)/1400, 1.0f); CHECK_GL_ERROR(); //RVB
+  glClearColor(0.0f, 0.9f, 0.0f, 1.0f); CHECK_GL_ERROR(); //RVB
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); CHECK_GL_ERROR();
 
+  glPointSize(5.0);
+  glDrawArrays(GL_POINTS, 0, 3);
+  glDrawArrays(GL_LINE_LOOP, 0, 3);
+  CHECK_GL_ERROR();
   //Changement de buffer d'affichage pour eviter un effet de scintillement
   glutSwapBuffers();
 }
@@ -74,7 +111,11 @@ static void keyboard_callback(unsigned char key, int, int)
       glhelper::print_screen();
       break;
     case 'q':
+      printf("qq ");
+      break;
     case 'Q':
+      printf("QQ ");
+      break;
     case 27:
       exit(0);
   }
@@ -84,10 +125,10 @@ static void keyboard_callback(unsigned char key, int, int)
  * timer_callback                                                            *
  \*****************************************************************************/
 static void timer_callback(int)
-{
+{ 
+  somme += 25;
   //demande de rappel de cette fonction dans 25ms
   glutTimerFunc(25, timer_callback, 0);
-
   //reactualisation de l'affichage
   glutPostRedisplay();
 }
