@@ -91,8 +91,7 @@ static void display_callback()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); CHECK_GL_ERROR();
 
   glPointSize(5.0);
-  glDrawArrays(GL_POINTS, 0, 3);
-  glDrawArrays(GL_LINE_LOOP, 0, 3);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
   CHECK_GL_ERROR();
   //Changement de buffer d'affichage pour eviter un effet de scintillement
   glutSwapBuffers();
